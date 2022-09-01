@@ -1,0 +1,6 @@
+_require "basis.smi"
+_require "./TM.smi"
+structure Eval =
+struct
+  val eval : TM.program -> TM.tape -> TM.tape
+end

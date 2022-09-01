@@ -1,0 +1,15 @@
+_require "basis.smi"
+structure TM =
+struct
+  (* Direction: ヘッドの方向 *)
+  datatype D = R | L
+  (* S: シンボルの集合 *)
+  datatype S = B | I | O
+  (* Q: 状態集合 *)
+  datatype Q = M | H
+  (* delta: 状態戦意巻数 *)
+  type delta = ((Q * S) * (Q * S * D)) list
+  type program = Q * delta
+  type tape = S list * S * S list
+  val P : program
+end
