@@ -6,7 +6,7 @@ struct
   (* S: シンボルの集合 *)
   datatype S = B | I | O
   (* Q: 状態集合 *)
-  datatype Q = M | H
+  datatype Q = Init | MoveLC | MoveL | MoveR | H
   (* delta: 状態戦意巻数 *)
   type delta = ((Q * S) * (Q * S * D)) list
   type program = Q * delta
