@@ -2,6 +2,5 @@ _require "basis.smi"
 _require "../readString/ReadString.smi"
 structure Top =
 struct
-  val readAndPrintLoop : TextIO.instream -> unit
   val top : string -> unit
 end

@@ -10,7 +10,7 @@ struct
     end
   fun top file =
     let
-      val inStream = TextIO.openIn file
+      val inStream = if file = "" then TextIO.stdIn else TextIO.openIn file
     in
       readAndPrintLoop inStream;
       TextIO.closeIn inStream
