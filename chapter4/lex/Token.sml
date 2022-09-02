@@ -29,7 +29,17 @@ struct
     | USE
     | VAL
     | WHILE
+    | ARROW
+    | COLON
+    | COMMA
+    | DOT
+    | DOTS
+    | EQ
+    | LBRACKET
+    | RBRACKET
+    | SEMICOLON
     | UNDERBAR
+    | VERTICALBAR
     | ID of string
     | STRING of string
     | REAL of string
@@ -65,7 +75,17 @@ struct
      | USE => "USE"
      | VAL => "VAL"
      | WHILE => "WHILE"
+     | ARROW => "ARROW"
+     | COLON => "COLON"
+     | COMMA => "COMMA"
+     | DOT => "DOT"
+     | DOTS => "DOTS"
+     | EQ => "EQ"
+     | LBRACKET => "LBRACKET"
+     | RBRACKET => "RBRACKET"
+     | SEMICOLON => "SEMICOLON"
      | UNDERBAR => "UNDERBAR"
+     | VERTICALBAR => "VERTICALBAR"
      | ID s => "ID " ^ s
      | STRING s => "STRING " ^ "\"" ^ s ^ "\""
      | REAL s => "REAL " ^ s

@@ -30,7 +30,17 @@ struct
     | USE
     | VAL
     | WHILE
+    | ARROW
+    | COLON
+    | COMMA
+    | DOT
+    | DOTS
+    | EQ
+    | LBRACKET
+    | RBRACKET
+    | SEMICOLON
     | UNDERBAR
+    | VERTICALBAR
     | ID of string
     | STRING of string
     | REAL of string
