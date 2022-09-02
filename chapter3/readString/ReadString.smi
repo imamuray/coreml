@@ -1,0 +1,9 @@
+_require "basis.smi"
+structure ReadString =
+struct
+  exception EOF
+  (* 空白を読み捨てる *)
+  val skipSpaces : TextIO.instream -> unit
+  (* 空白が来るまで1文字ずつ読んでそれらを1つの文字列に連結する *)
+  val readString : TextIO.instream -> string
+end
