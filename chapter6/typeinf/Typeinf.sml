@@ -4,7 +4,7 @@ struct
   exception TypeError
   fun PTS absyn = case absyn of
       INT int => (emptyTyEnv, INTty)
-    | STRING string => (emptyTyEnv, INTty)
+    | STRING string => (emptyTyEnv, STRINGty)
     | TRUE => (emptyTyEnv, BOOLty)
     | FALSE => (emptyTyEnv, BOOLty)
     | EXPID string =>
