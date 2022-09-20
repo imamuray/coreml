@@ -1,49 +1,51 @@
 structure Typeinf =
 struct
-  open Type Syntax TypeUtils UnifyTy
   exception TypeError
+  (* absynが型判定を持てばその主要な型判定を返す, そうでなければエラーとする *)
+  (* absyn: Abstract Syntax Tree *)
   fun PTS absyn = case absyn of
-      INT int => (emptyTyEnv, INTty)
-    | STRING string => (emptyTyEnv, STRINGty)
-    | TRUE => (emptyTyEnv, BOOLty)
-    | FALSE => (emptyTyEnv, BOOLty)
-    | EXPID string =>
+      Syntax.INT int => (TypeUtils.emptyTyEnv, Type.INTty)
+    | Syntax.STRING string => (TypeUtils.emptyTyEnv, Type.STRINGty)
+    | Syntax.TRUE => (TypeUtils.emptyTyEnv, Type.BOOLty)
+    | Syntax.FALSE => (TypeUtils.emptyTyEnv, Type.BOOLty)
+    | Syntax.EXPID string =>
       let
-        val newty = newTy()
+        val newty = Type.newTy()
       in
-        (singletonTyEnv(string, newty), newty)
+        (TypeUtils.singletonTyEnv(string, newty), newty)
       end
-    | EXPPAIR (exp1, exp2) =>
-      let
-        val (tyEnv1, ty1) = PTS exp1
-        val (tyEnv2, ty2) = PTS exp2
-        val tyEquations = matches (tyEnv1, tyEnv2)
-        val subst = unify tyEquations
-        val tEnv3 = unionTyEnv (substTyEnv subst tyEnv1,
-                                substTyEnv subst tyEnv2)
-      in
-        (tEnv3, substTy subst (PAIRty(ty1, ty2)))
-      end
-    | EXPAPP (exp1, exp2) =>
+    | Syntax.EXPPAIR (exp1, exp2) =>
       let
         val (tyEnv1, ty1) = PTS exp1
         val (tyEnv2, ty2) = PTS exp2
-        val tyEquations = matches (tyEnv1, tyEnv2)
-        val newTy = newTy()
-        val subst = unify ((FUNty(ty2, newTy), ty1)::tyEquations)
-        val tEnv3 = unionTyEnv (substTyEnv subst tyEnv1,
-                                substTyEnv subst tyEnv2)
+        val tyEquations = TypeUtils.matches (tyEnv1, tyEnv2)
+        val subst = UnifyTy.unify tyEquations
+        val tEnv3 = TypeUtils.unionTyEnv (TypeUtils.substTyEnv subst tyEnv1,
+                                          TypeUtils.substTyEnv subst tyEnv2)
       in
-        (tEnv3, substTy subst newTy)
+        (tEnv3, TypeUtils.substTy subst (Type.PAIRty(ty1, ty2)))
       end
-    | EXPFN (string, exp) =>
+    | Syntax.EXPAPP (exp1, exp2) =>
+      let
+        val (tyEnv1, ty1) = PTS exp1
+        val (tyEnv2, ty2) = PTS exp2
+        val tyEquations = TypeUtils.matches (tyEnv1, tyEnv2)
+        val newTy = Type.newTy()
+        val subst = UnifyTy.unify ((Type.FUNty(ty2, newTy), ty1)::tyEquations)
+        val tEnv3 = TypeUtils.unionTyEnv (TypeUtils.substTyEnv subst tyEnv1,
+                                          TypeUtils.substTyEnv subst tyEnv2)
+      in
+        (tEnv3, TypeUtils.substTy subst newTy)
+      end
+    | Syntax.EXPFN (string, exp) =>
       let
         val (tyEnv, ty) = PTS exp
       in
-        case findTyEnv(tyEnv, string) of
-            SOME domty => (removeTyEnv(tyEnv, string), FUNty(domty, ty))
-          | NONE => (tyEnv, FUNty(newTy(), ty))
+        case TypeUtils.findTyEnv(tyEnv, string) of
+            SOME domty => (TypeUtils.removeTyEnv(tyEnv, string), Type.FUNty(domty, ty))
+          | NONE => (tyEnv, Type.FUNty(Type.newTy(), ty))
       end
+    (* TODO ほかのSyntaxの処理 *)
     | _ => raise TypeError
   fun typeinf dec =
     let
