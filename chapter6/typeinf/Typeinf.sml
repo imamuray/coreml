@@ -47,7 +47,7 @@ struct
       end
     (* TODO ほかのSyntaxの処理 *)
     | _ => raise TypeError
-  fun typeinf dec =
+fun typeinf_PTS dec =
     let
       val exp = case dec of
           Syntax.VAL (id, exp) => exp
@@ -61,5 +61,60 @@ struct
     in
       ()
     end
+    handle UnifyTy.UnifyTy => raise TypeError
+
+  infixr ++
+  fun s1 ++ s2 = TypeUtils.composeSubst s1 s2
+  fun W gamma exp = case exp of
+      Syntax.INT int => (TypeUtils.emptyTyEnv, Type.INTty)
+    | Syntax.STRING string => (TypeUtils.emptyTyEnv, Type.STRINGty)
+    | Syntax.TRUE => (TypeUtils.emptyTyEnv, Type.BOOLty)
+    | Syntax.FALSE => (TypeUtils.emptyTyEnv, Type.BOOLty)
+    | Syntax.EXPID string =>
+      (case SEnv.find(gamma, string) of
+          SOME ty => (TypeUtils.emptySubst, TypeUtils.freshInst ty)
+        | NONE => raise TypeError)
+    | Syntax.EXPPAIR (exp1, exp2) =>
+      let
+        val (S1, ty1) = W gamma exp1
+        val (S2, ty2) = W (TypeUtils.substTyEnv S1 gamma) exp2
+      in
+        (S2 ++ S1, Type.PAIRty(TypeUtils.substTy S2 ty1, ty2))
+      end
+    | Syntax.EXPAPP (exp1, exp2) =>
+      let
+        val (S1, ty1) = W gamma exp1
+        val (S2, ty2) = W (TypeUtils.substTyEnv S1 gamma) exp2
+        val ty3 = Type.newTy()
+        val S3 = UnifyTy.unify [(Type.FUNty(ty2, ty3), TypeUtils.substTy S2 ty1)]
+        val S4 = TypeUtils.composeSubst S3 (TypeUtils.composeSubst S2 S1)
+      in
+        (S4, TypeUtils.substTy S4 ty3)
+      end
+    | Syntax.EXPFN (string, exp) =>
+      let
+        val ty1 = Type.newTy()
+        val newGamma = SEnv.insert(gamma, string, ty1)
+        val (S, ty2) = W newGamma exp
+      in
+        (S, Type.FUNty(TypeUtils.substTy S ty1, ty2))
+      end
+    (* TODO ほかのSyntaxの処理 *)
+    | _ => raise TypeError
+  fun typeinf gamma dec =
+    case dec of
+        Syntax.VAL (id, exp) =>
+          let
+            val (subst, ty) = W gamma exp
+            val tids = SSet.listItems (UnifyTy.FTV ty)
+            val newTy = if null tids then ty else Type.POLYty (tids, ty)
+            val _ = print ("Inferred Typing:\n"
+                          ^ "val " ^ id ^ " : "
+                          ^ Type.tyToString newTy ^ "\n")
+          in
+            SEnv.insert(gamma, id, newTy)
+          end
+      (* 第6章の dec は VAL のみ対応, FUN は第7章で実装 *)
+      | _ => raise TypeError
     handle UnifyTy.UnifyTy => raise TypeError
 end

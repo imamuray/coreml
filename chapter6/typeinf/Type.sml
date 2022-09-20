@@ -38,6 +38,7 @@ struct
     | TYVARty of string  (* 型変数 *)
     | FUNty of ty * ty
     | PAIRty of ty * ty
+    | POLYty of string list * ty
   (* 呼ばれるごとに新しい型変数を返す関数, t fresh に相当 *)
   fun newTy () = TYVARty (newTyIdName())
   fun tyToString ty = case ty of
@@ -49,4 +50,7 @@ struct
       "(" ^ tyToString ty1 ^ " -> " ^ tyToString ty2 ^ ")"
     | PAIRty (ty1, ty2) =>
       "(" ^ tyToString ty1 ^ " * " ^ tyToString ty2 ^ ")"
+    | POLYty (tids, ty) =>
+      "[" ^ String.concatWith "," tids
+        ^ "." ^ tyToString ty ^ "]"
 end

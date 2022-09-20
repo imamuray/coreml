@@ -17,4 +17,5 @@ struct
   val unionTyEnv : tyEnv * tyEnv -> tyEnv
   val removeTyEnv : tyEnv * string -> tyEnv
   val tyEnvToString : tyEnv -> string
+  val freshInst : Type.ty -> Type.ty
 end

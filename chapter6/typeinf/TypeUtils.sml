@@ -15,6 +15,8 @@ struct
       Type.FUNty (substTy subst ty1, substTy subst ty2)
     | Type.PAIRty (ty1, ty2) =>
       Type.PAIRty (substTy subst ty1, substTy subst ty2)
+    | Type.POLYty (tids, ty) =>
+      Type.POLYty (tids, substTy subst ty)
   fun composeSubst subst1 subst2 =
     SEnv.unionWith
       (fn (ty1, ty2) => ty1)
@@ -40,4 +42,18 @@ struct
               (map (fn (id, ty) => id ^ ":" ^ Type.tyToString ty) stringTyList))
       ^ "}"
     end
+  fun freshInst ty = case ty of
+    Type.POLYty (tids, ty) =>
+      let
+        val S =
+          foldr (fn (tid, S) =>
+                  let
+                    val newty = Type.newTy ()
+                  in
+                    SEnv.insert(S, tid, newty)
+                  end) emptySubst tids
+      in
+        substTy S ty
+      end
+    | _ => ty
 end
