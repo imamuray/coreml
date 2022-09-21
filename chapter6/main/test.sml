@@ -1,0 +1,10 @@
+val num = 1;
+val str = "hello";
+val t = true;
+val f = false;
+val id = fn x => x;
+val const = fn x => num;
+val pair = (num, str);
+val x = const f;
+val y = id str;
+val z = id t;
