@@ -30,6 +30,7 @@ ws = "\ " | "\t" | "\r\n" | "\n" | "\r";
 "fn" => (Tokens.FN(yypos, yypos + 2));
 "if" => (Tokens.IF(yypos, yypos + 2));
 "then" => (Tokens.THEN(yypos, yypos + 4));
+"prim" => (Tokens.PRIM(yypos, yypos + 4));
 "val" => (Tokens.VAL(yypos, yypos + 3));
 "fun" => (Tokens.FUN(yypos, yypos + 3));
 "(" => (Tokens.LPAREN(yypos, yypos + 1));
