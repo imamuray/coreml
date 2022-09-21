@@ -20,10 +20,10 @@ struct
         val (tyEnv2, ty2) = PTS exp2
         val tyEquations = TypeUtils.matches (tyEnv1, tyEnv2)
         val subst = UnifyTy.unify tyEquations
-        val tEnv3 = TypeUtils.unionTyEnv (TypeUtils.substTyEnv subst tyEnv1,
-                                          TypeUtils.substTyEnv subst tyEnv2)
+        val tyEnv3 = TypeUtils.unionTyEnv (TypeUtils.substTyEnv subst tyEnv1,
+                                           TypeUtils.substTyEnv subst tyEnv2)
       in
-        (tEnv3, TypeUtils.substTy subst (Type.PAIRty(ty1, ty2)))
+        (tyEnv3, TypeUtils.substTy subst (Type.PAIRty(ty1, ty2)))
       end
     | Syntax.EXPAPP (exp1, exp2) =>
       let
@@ -32,10 +32,10 @@ struct
         val tyEquations = TypeUtils.matches (tyEnv1, tyEnv2)
         val newTy = Type.newTy()
         val subst = UnifyTy.unify ((Type.FUNty(ty2, newTy), ty1)::tyEquations)
-        val tEnv3 = TypeUtils.unionTyEnv (TypeUtils.substTyEnv subst tyEnv1,
-                                          TypeUtils.substTyEnv subst tyEnv2)
+        val tyEnv3 = TypeUtils.unionTyEnv (TypeUtils.substTyEnv subst tyEnv1,
+                                           TypeUtils.substTyEnv subst tyEnv2)
       in
-        (tEnv3, TypeUtils.substTy subst newTy)
+        (tyEnv3, TypeUtils.substTy subst newTy)
       end
     | Syntax.EXPFN (string, exp) =>
       let
@@ -76,28 +76,27 @@ fun typeinf_PTS dec =
         | NONE => raise TypeError)
     | Syntax.EXPPAIR (exp1, exp2) =>
       let
-        val (S1, ty1) = W gamma exp1
-        val (S2, ty2) = W (TypeUtils.substTyEnv S1 gamma) exp2
+        val (subst1, ty1) = W gamma exp1
+        val (subst2, ty2) = W (TypeUtils.substTyEnv subst1 gamma) exp2
       in
-        (S2 ++ S1, Type.PAIRty(TypeUtils.substTy S2 ty1, ty2))
+        (subst2 ++ subst1, Type.PAIRty(TypeUtils.substTy subst2 ty1, ty2))
       end
     | Syntax.EXPAPP (exp1, exp2) =>
       let
-        val (S1, ty1) = W gamma exp1
-        val (S2, ty2) = W (TypeUtils.substTyEnv S1 gamma) exp2
-        val ty3 = Type.newTy()
-        val S3 = UnifyTy.unify [(Type.FUNty(ty2, ty3), TypeUtils.substTy S2 ty1)]
-        val S4 = TypeUtils.composeSubst S3 (TypeUtils.composeSubst S2 S1)
+        val (subst1, ty1) = W gamma exp1
+        val (subst2, ty2) = W (TypeUtils.substTyEnv subst1 gamma) exp2
+        val newTy = Type.newTy()
+        val subst3 = UnifyTy.unify [(Type.FUNty(ty2, newTy), TypeUtils.substTy subst2 ty1)]
       in
-        (S4, TypeUtils.substTy S4 ty3)
+        (subst3 ++ subst2 ++ subst1, TypeUtils.substTy subst3 newTy)
       end
     | Syntax.EXPFN (string, exp) =>
       let
-        val ty1 = Type.newTy()
-        val newGamma = SEnv.insert(gamma, string, ty1)
-        val (S, ty2) = W newGamma exp
+        val newTy = Type.newTy()
+        val newGamma = SEnv.insert(gamma, string, newTy)
+        val (subst, ty) = W newGamma exp
       in
-        (S, Type.FUNty(TypeUtils.substTy S ty1, ty2))
+        (subst, Type.FUNty(TypeUtils.substTy subst newTy, ty))
       end
     (* TODO ほかのSyntaxの処理 *)
     | _ => raise TypeError

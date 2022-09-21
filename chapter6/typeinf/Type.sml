@@ -38,7 +38,7 @@ struct
     | TYVARty of string  (* 型変数 *)
     | FUNty of ty * ty
     | PAIRty of ty * ty
-    | POLYty of string list * ty
+    | POLYty of string list * ty  (* 多相型 *)
   (* 呼ばれるごとに新しい型変数を返す関数, t fresh に相当 *)
   fun newTy () = TYVARty (newTyIdName())
   fun tyToString ty = case ty of
