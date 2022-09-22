@@ -13,3 +13,4 @@ val right = #2 pair;
 val ifexp = if f then (#1 pair) else 2;
 val prim1 = prim(eq, 1, 2);
 val prim2 = prim(add, 1, 2);
+fun addone x = prim(add, 1, x);

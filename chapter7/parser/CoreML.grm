@@ -15,7 +15,7 @@
 %%
 top : dec (dec)
 dec : VAL ID EQUAL exp (Syntax.VAL(ID, exp))
-    | FUN ID ID EQUAL exp (Syntax.FUN(ID1, ID2, exp))
+    | FUN ID ID EQUAL exp (Syntax.VAL(ID1, (Syntax.EXPFIX(ID1, ID2, exp))))
 exp : appexp (appexp)
     | IF exp THEN exp ELSE exp (Syntax.EXPIF(exp1, exp2, exp3))
     | FN ID DARROW exp (Syntax.EXPFN(ID, exp))

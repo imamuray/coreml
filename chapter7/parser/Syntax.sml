@@ -14,9 +14,9 @@ struct
     | EXPPROJ2 of exp
     | EXPPRIM of prim * exp * exp
     | EXPIF of exp * exp * exp
+    | EXPFIX of string * string * exp
   and dec =
       VAL of string * exp
-    | FUN of string * string * exp
   fun expToString exp =
     case exp of
        EXPID id => id
@@ -42,8 +42,9 @@ struct
       end
     | EXPIF (exp1, exp2, exp3) =>
       "if " ^ expToString exp1 ^ " then " ^ expToString exp2 ^ " else " ^ expToString exp3
+    | EXPFIX (f, x, exp) =>
+      "(fix " ^ f ^ " (" ^ x ^ ") => " ^ expToString exp ^ ")"
   fun decToString dec =
     case dec of
        VAL (id, exp) => "val " ^ id ^ " = " ^ expToString exp
-     | FUN (id1, id2, exp) => "fun " ^ id1 ^ " " ^ id2 ^ " = " ^ expToString exp
 end

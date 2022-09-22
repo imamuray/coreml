@@ -293,7 +293,7 @@ MlyValue.ID ID2, _, _)) :: ( _, ( MlyValue.ID ID1, _, _)) :: ( _, ( _,
  let val  ID1 = ID1 ()
  val  ID2 = ID2 ()
  val  (exp as exp1) = exp1 ()
- in (Syntax.FUN(ID1, ID2, exp))
+ in (Syntax.VAL(ID1, (Syntax.EXPFIX(ID1, ID2, exp))))
 end)
  in ( LrTable.NT 4, ( result, FUN1left, exp1right), rest671)
 end

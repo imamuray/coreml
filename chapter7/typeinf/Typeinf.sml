@@ -62,6 +62,18 @@ struct
       in
         (subst4 ++ subst3 ++ subst2 ++ subst1, TypeUtils.substTy subst4 ty3)
       end
+    | Syntax.EXPFIX (fid, xid, exp) =>
+      let
+        val argTy = Type.newTy()
+        val bodyTy = Type.newTy()
+        val funTy = Type.FUNty(argTy, bodyTy)
+        val newGamma = SEnv.insert(SEnv.insert(gamma, fid, funTy), xid, argTy)
+        val (subst1, ty) = W newGamma exp
+        val subst2 = UnifyTy.unify [(ty, bodyTy)]
+        val subst = subst2 ++ subst1
+      in
+        (subst, TypeUtils.substTy subst funTy)
+      end
     | Syntax.EXPPRIM (prim, exp1, exp2) =>
       let
         val primTy = case prim of
@@ -87,7 +99,5 @@ struct
           in
             SEnv.insert(gamma, id, newTy)
           end
-      (* 第6章の dec は VAL のみ対応, FUN は第7章で実装 *)
-      | _ => raise TypeError
     handle UnifyTy.UnifyTy => raise TypeError
 end
