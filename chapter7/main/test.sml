@@ -17,3 +17,4 @@ fun addone x = add(1, x);
 val two = addone 1;
 fun f x = if eq(x, 1) then 1 else mul(x, f sub(x, 1));
 val result = f 10;
+val printTest = print(result);

@@ -72,6 +72,8 @@ struct
           | S.DIV => V.INT (op div arg)
           | S.EQ => V.BOOL (op = arg)
       end
+    | S.EXPPRIM1 (prim, exp) =>
+      raise RuntimeError
     | S.EXPFIX (string1, string2, exp) => V.REC(env, string1, string2, exp)
   fun eval env (S.VAL (id, exp)) =
     let

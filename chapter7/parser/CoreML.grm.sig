@@ -8,6 +8,7 @@ val THEN:  pos * pos -> token
 val SUB:  pos * pos -> token
 val STRING: (string) *  pos * pos -> token
 val SEMICOLON:  pos * pos -> token
+val PRINT:  pos * pos -> token
 val RPAREN:  pos * pos -> token
 val MUL:  pos * pos -> token
 val LPAREN:  pos * pos -> token
