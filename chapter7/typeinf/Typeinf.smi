@@ -8,6 +8,5 @@ _require "./UnifyTy.smi"
 structure Typeinf =
 struct
   exception TypeError
-  val typeinf_PTS : Syntax.dec -> unit
   val typeinf : TypeUtils.tyEnv -> Syntax.dec -> TypeUtils.tyEnv
 end
