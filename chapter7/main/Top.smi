@@ -1,4 +1,6 @@
 _require "basis.smi"
+_require "../eval/Eval.smi"
+_require "../eval/Value.smi"
 _require "../parser/Parser.smi"
 _require "../typeinf/Typeinf.smi"
 _require "../typeinf/TypeUtils.smi"
