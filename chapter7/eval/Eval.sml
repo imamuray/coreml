@@ -73,7 +73,17 @@ struct
           | S.EQ => V.BOOL (op = arg)
       end
     | S.EXPPRIM1 (prim, exp) =>
-      raise RuntimeError
+      let
+        val value = evalExp env exp
+        val arg = case value of
+            V.STRING string => string
+          | _ => raise RuntimeError
+      in
+        case prim of
+            S.PRINT =>
+              print (arg ^ "\n");
+              V.INT (size arg)
+      end
     | S.EXPFIX (string1, string2, exp) => V.REC(env, string1, string2, exp)
   fun eval env (S.VAL (id, exp)) =
     let

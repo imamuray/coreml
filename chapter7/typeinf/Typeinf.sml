@@ -86,6 +86,15 @@ struct
       in
         (subst3 ++ subst2 ++ subst1, primTy)
       end
+    | Syntax.EXPPRIM1 (prim, exp) =>
+      let
+        val primTy = case prim of
+            PRINT => Type.INTty
+        val (subst1, ty) = W gamma exp
+        val subst2 = UnifyTy.unify [(ty, Type.STRINGty)]
+      in
+        (subst2, primTy)
+      end
   fun typeinf gamma dec =
     case dec of
         Syntax.VAL (id, exp) =>
