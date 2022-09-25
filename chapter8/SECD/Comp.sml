@@ -33,7 +33,7 @@ struct
       val code = comp exp nil
     in
       print ("Compiled to:\n"
-             ^ I.codeToString code ^ "\n");
+             ^ "  " ^ I.codeToString code ^ "\n");
       (id, code)
     end
 end

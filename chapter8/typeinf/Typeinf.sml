@@ -103,7 +103,7 @@ struct
             val tids = SSet.listItems (UnifyTy.FTV ty)
             val newTy = if null tids then ty else Type.POLYty (tids, ty)
             val _ = print ("Inferred Typing:\n"
-                          ^ "val " ^ id ^ " : "
+                          ^ "  val " ^ id ^ " : "
                           ^ Type.tyToString newTy ^ "\n")
           in
             SEnv.insert(gamma, id, newTy)

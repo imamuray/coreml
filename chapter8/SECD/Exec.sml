@@ -18,7 +18,7 @@ struct
       val newEnv = SEnv.insert(env, id, value)
     in
       print ("Execution result:\n"
-             ^ "val " ^ id ^ " = " ^ V.valueToString value ^ "\n");
+             ^ "  val " ^ id ^ " = " ^ V.valueToString value ^ "\n");
       newEnv
     end
 end

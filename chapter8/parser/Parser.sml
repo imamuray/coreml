@@ -24,7 +24,8 @@ struct
     let
       val stream = discardSemicolons stream
       val (dec, stream) = P.parse {lookahead=0, stream=stream, error=print_error, arg=()}
-      val _ = print ("Parse result:\n" ^ (Syntax.decToString dec) ^ "\n")
+      val _ = print ("Parse result:\n"
+                     ^ "  " ^ (Syntax.decToString dec) ^ "\n")
     in
       (dec, stream)
     end
